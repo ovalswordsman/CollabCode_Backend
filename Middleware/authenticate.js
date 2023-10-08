@@ -1,19 +1,18 @@
 const jwt = require("jsonwebtoken");
-const User = require("../Model/User");
 
-const notAuthenticate = async (req, res, next) => {
+const authenticate = async (req, res, next) => {
   const token = req.headers.authorization;
+  console.log(token);
   jwt.verify(token, process.env.JSON_SECRET_KEY, (err) => {
     if (err) {
       // Token verification failed
-      // Redirect to the login page in case of unauthorized access
-      return res.redirect("/");
+      // Send a JSON response indicating the authentication status
+      res.status(500);
+    } else {
+      // Continue with the next middleware or route handler
+      next();
     }
-
-  
-    // Continue with the next middleware or route handler
-    next();
   });
 };
 
-module.exports = notAuthenticate;
+module.exports = authenticate;

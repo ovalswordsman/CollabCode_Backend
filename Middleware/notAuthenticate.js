@@ -3,7 +3,7 @@ const User = require("../Model/User");
 
 const notAuthenticate = async (req, res, next) => {
   const token = req.headers.authorization;
-
+  console.log(req.headers)
   jwt.verify(token, process.env.JSON_SECRET_KEY, (e) => {
     if (e) {
       next();

@@ -22,18 +22,16 @@ app.set("trust proxy", 1);
 
 app.post("/register", notAuthenticate, async (req, res) => {
   try {
-    const id = Math.round(Math.random() * 1e6);
     var oldUser = await User.findOne({ email: req.body.email });
 
     // You can generate a token regardless of whether the user exists or not
     let token = jwt.sign(
-      { _id: id, email: req.body.email, name: req.body.name },
+      { email: req.body.email, name: req.body.name },
       process.env.JSON_SECRET_KEY
     );
 
     if (!oldUser) {
       await User.create({
-        _id: id,
         name: req.body.name,
         email: req.body.email,
         picture: req.body.picture,
@@ -41,7 +39,7 @@ app.post("/register", notAuthenticate, async (req, res) => {
     }
 
     res
-      .json({ token: token, name: req.body.name, email: req.body.email })
+      .json({ token: token, name: req.body.name, email: req.body.email, picture:req.body.picture })
       .status(200);
   } catch (err) {
     console.error(err);
@@ -50,8 +48,10 @@ app.post("/register", notAuthenticate, async (req, res) => {
 });
 
 app.get("/login", authenticate, (req, res) => {
-  res.status(500);
+  res.status(201);
 });
+
+
 
 app.listen(8080, () => {
   console.log(`Server Started`);
